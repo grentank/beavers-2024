@@ -8,6 +8,8 @@ router.get('/', (req, res) => {
 
 router.get('/account', (req, res) => res.render('AccountPage'));
 
+router.get('/search', (req, res) => res.render('SearchPage'));
+
 router.get('*', (req, res) => res.render('NotFoundPage'));
 
 export default router;

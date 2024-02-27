@@ -4,8 +4,8 @@ import {
   Col, Form, Image, Row,
 } from 'react-bootstrap';
 
-export default function ProfilePicEdit() {
-  const [profilePic, setProfilePic] = useState('/images/no-profile-pic.jpg');
+export default function ProfilePicEdit({ user }) {
+  const [profilePic, setProfilePic] = useState(user?.img || '/images/no-profile-pic.jpg');
   const editProfilePic = async (event) => {
     event.preventDefault();
     const formData = new FormData(event.target);

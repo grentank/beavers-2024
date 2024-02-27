@@ -1,4 +1,5 @@
 import express from 'express';
+import { Op } from 'sequelize';
 import { Tweet, User } from '../../../db/models';
 import { verifyAccessToken } from '../../middlewares/verifyTokens';
 
@@ -20,5 +21,17 @@ apiTweetsRouter
     });
     res.json(newTweetWithAuthor);
   });
+
+apiTweetsRouter.get('/search', async (req, res) => {
+  const { text } = req.query;
+  const tweetsContaingText = await Tweet.findAll({
+    where: {
+      body: {
+        [Op.like]: `%${text}%`,
+      },
+    },
+  });
+  res.json(tweetsContaingText);
+});
 
 export default apiTweetsRouter;

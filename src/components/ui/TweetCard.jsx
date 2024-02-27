@@ -1,12 +1,35 @@
-import React from 'react';
+import axios from 'axios';
+import React, { useEffect, useState } from 'react';
 import { Col, Image, Row } from 'react-bootstrap';
 import Button from 'react-bootstrap/Button';
 import Card from 'react-bootstrap/Card';
 
-export default function TweetCard({ tweet }) {
+export default function TweetCard({ tweet, handleDelete, setData }) {
+  const [counter, setCounter] = useState(0);
+  useEffect(() => {
+    const intervalId = setInterval(() => {
+      setCounter((prev) => {
+        console.log(`id: ${tweet.id}\tcounter: ${prev}`);
+        return prev + 1;
+      });
+    }, 1000);
+    return () => clearInterval(intervalId);
+  }, []);
+
+  // useEffect(() => {
+  //   if (tweet.id !== 1) return;
+  //   const controller = new AbortController();
+  //   axios('/api/auth', { signal: controller.signal }).then(() => setData('DATA MUTATED')).catch(console.log);
+  //   return () => controller.abort();
+  // }, []);
+
   return (
     <Card className="m-2">
-      <Card.Header>Featured</Card.Header>
+      <Card.Header>
+        {counter}
+        {' '}
+        s
+      </Card.Header>
       <Card.Body>
         <Row>
           <Col xs={2} className="d-flex justify-content-center align-items-start">
@@ -17,7 +40,7 @@ export default function TweetCard({ tweet }) {
             <Card.Text>
               {tweet.body}
             </Card.Text>
-            <Button variant="primary">Go somewhere</Button>
+            <Button variant="danger" onClick={() => handleDelete(tweet.id)}>Delete</Button>
           </Col>
         </Row>
       </Card.Body>

@@ -1,10 +1,19 @@
 import express from 'express';
 import bcrypt from 'bcrypt';
-import { User } from '../../../db/models';
+import { User, Tweet } from '../../../db/models';
 import cookiesConfig from '../../config/cookiesConfig';
 import generateTokens from '../../utils/generateTokens';
+import { verifyRefreshToken } from '../../middlewares/verifyTokens';
 
 const apiAuthRouter = express.Router();
+
+apiAuthRouter.get('/', verifyRefreshToken, async (req, res) => {
+  const usersTweetsCount = await Tweet.count({ where: { authorId: res.locals.user.id } });
+  const targetUser = await User.findByPk(res.locals.user.id);
+  setTimeout(() => {
+    res.json({ ...targetUser.get(), totalTweets: usersTweetsCount });
+  }, 5000);
+});
 
 apiAuthRouter.post('/signup', async (req, res) => {
   const { email, name, password } = req.body;
