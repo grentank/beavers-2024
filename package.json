@@ -6,7 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "babel-node src/server.js",
-    "start": "webpack -d eval-source-map && babel-node src/server.js",
+    "start": "npm run db:reset && webpack -d eval-source-map && babel-node src/server.js",
     "webpack": "webpack -wd eval-source-map",
     "db:reset": "npx sequelize-cli db:drop && npx sequelize-cli db:create && npx sequelize-cli db:migrate && npx sequelize-cli db:seed:all",
     "launch": "npm run db:reset && npm run start",

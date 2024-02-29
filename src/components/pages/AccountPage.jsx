@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Col, Row, Spinner } from 'react-bootstrap';
+import { Col, Row } from 'react-bootstrap';
 import axios from 'axios';
 import ProfilePicEdit from '../ui/ProfilePicEdit';
 import Loader from '../HOC/Loader';
