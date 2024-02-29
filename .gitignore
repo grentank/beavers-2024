@@ -1,7 +1,8 @@
 # SSR
+node_modules/
+distr/
 public/app.js
 public/vendor.js
-
 .env
 
 # Logs

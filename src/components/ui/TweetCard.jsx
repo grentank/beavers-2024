@@ -4,7 +4,7 @@ import { Col, Image, Row } from 'react-bootstrap';
 import Button from 'react-bootstrap/Button';
 import Card from 'react-bootstrap/Card';
 
-export default function TweetCard({ tweet, handleDelete, setData }) {
+export default function TweetCard({ tweet, handleDelete, user }) {
   const [counter, setCounter] = useState(0);
   useEffect(() => {
     const intervalId = setInterval(() => {
@@ -40,7 +40,7 @@ export default function TweetCard({ tweet, handleDelete, setData }) {
             <Card.Text>
               {tweet.body}
             </Card.Text>
-            <Button variant="danger" onClick={() => handleDelete(tweet.id)}>Delete</Button>
+            <Button variant="danger" disabled={user?.id !== tweet.authorId} onClick={() => handleDelete(tweet.id)}>Delete</Button>
           </Col>
         </Row>
       </Card.Body>
