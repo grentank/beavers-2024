@@ -1,10 +1,12 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { Button, Form, FormGroup, Input, Label } from 'reactstrap';
 import type { AddCharFormData } from '../../types/character';
+import { TranslateContext } from '../../contexts/translate/context';
+import { useCharactersHandlers } from '../../contexts/characters/hooks';
 
-type AddCharFormProps = {
-  addCharHandler: (formData: AddCharFormData) => Promise<void>;
-};
+// type AddCharFormProps = {
+//   addCharHandler: (formData: AddCharFormData) => Promise<void>;
+// };
 
 const defaultFormData: AddCharFormData<boolean> = {
   alive: false,
@@ -13,13 +15,15 @@ const defaultFormData: AddCharFormData<boolean> = {
   type: '',
 };
 
-function AddCharForm({ addCharHandler }: AddCharFormProps): JSX.Element {
+function AddCharForm(): JSX.Element {
   const [formData, setFormData] =
     useState<AddCharFormData<boolean>>(defaultFormData);
   const handleChange: React.ChangeEventHandler<HTMLInputElement> = (e) =>
     setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
 
-  console.log(formData);
+  // console.log(formData);
+  const translate = useContext(TranslateContext);
+  const { addHandler: addCharHandler } = useCharactersHandlers();
   return (
     <Form
       onSubmit={(e) => {
@@ -32,29 +36,29 @@ function AddCharForm({ addCharHandler }: AddCharFormProps): JSX.Element {
       }}
     >
       <FormGroup>
-        <Label for="charName">Name</Label>
+        <Label for="charName">{translate ? 'Имя' : 'Name'}</Label>
         <Input
           onChange={handleChange}
           value={formData.name}
           id="charName"
           name="name"
-          placeholder="Name"
+          placeholder={translate ? 'Имя' : 'Name'}
           type="text"
         />
       </FormGroup>
       <FormGroup>
-        <Label for="charType">Type</Label>
+        <Label for="charType">{translate ? 'Тип' : 'Type'}</Label>
         <Input
           onChange={handleChange}
           value={formData.type}
           id="charType"
           name="type"
-          placeholder="Type"
+          placeholder={translate ? 'Тип' : 'Type'}
           type="text"
         />
       </FormGroup>
       <FormGroup>
-        <Label for="charImg">Image</Label>
+        <Label for="charImg">{translate ? 'Картинка' : 'Image'}</Label>
         <Input
           onChange={handleChange}
           value={formData.image}
@@ -74,9 +78,9 @@ function AddCharForm({ addCharHandler }: AddCharFormProps): JSX.Element {
           type="checkbox"
           name="alive"
         />
-        <Label>Alive</Label>
+        <Label>{translate ? 'Жив' : 'Alive'}</Label>
       </FormGroup>
-      <Button type="submit">Submit</Button>
+      <Button type="submit">{translate ? 'Добавить' : 'Submit'}</Button>
     </Form>
   );
 }

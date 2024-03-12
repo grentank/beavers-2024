@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import {
   Button,
   Card,
@@ -8,14 +8,18 @@ import {
   CardTitle,
 } from 'reactstrap';
 import type { CharacterType } from '../../types/character';
+import { TranslateContext } from '../../contexts/translate/context';
+import { useCharactersHandlers } from '../../contexts/characters/hooks';
 
 type CharCardProps = {
   char: CharacterType;
-  handleDelete: (id: number) => void;
+  // handleDelete: (id: number) => void;
 };
 
-function CharCard({ char, handleDelete }: CharCardProps): JSX.Element {
-  console.log('Card render', char.id);
+function CharCard({ char }: CharCardProps): JSX.Element {
+  const translate = useContext(TranslateContext);
+  const { deleteHandler: handleDelete } = useCharactersHandlers();
+  // console.log('Card render. Context:', translate);
   return (
     <Card
       style={{
@@ -30,7 +34,7 @@ function CharCard({ char, handleDelete }: CharCardProps): JSX.Element {
         </CardSubtitle>
         <CardText>{char.alive ? 'Alive' : 'Dead'}</CardText>
         <Button color="danger" onClick={() => handleDelete(char.id)}>
-          Delete
+          {translate ? 'Удалить' : 'Delete'}
         </Button>
       </CardBody>
     </Card>
