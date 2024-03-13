@@ -1,86 +1,45 @@
 import React, { useContext, useState } from 'react';
 import { Button, Form, FormGroup, Input, Label } from 'reactstrap';
-import type { AddCharFormData } from '../../types/character';
-import { TranslateContext } from '../../contexts/translate/context';
-import { useCharactersHandlers } from '../../contexts/characters/hooks';
-
-// type AddCharFormProps = {
-//   addCharHandler: (formData: AddCharFormData) => Promise<void>;
-// };
-
-const defaultFormData: AddCharFormData<boolean> = {
-  alive: false,
-  image: '',
-  name: '',
-  type: '',
-};
+import type { AddCharacterForm } from '../../types/character';
+import charService from '../../services/charService';
+import { useAppDispatch } from '../../redux/hooks';
+import { addCharacter } from '../../redux/slices/characters/slice';
 
 function AddCharForm(): JSX.Element {
-  const [formData, setFormData] =
-    useState<AddCharFormData<boolean>>(defaultFormData);
-  const handleChange: React.ChangeEventHandler<HTMLInputElement> = (e) =>
-    setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+  const dispatch = useAppDispatch();
+  const submitHandler: React.FormEventHandler<HTMLFormElement> = (event) => {
+    event.preventDefault();
+    const formData = new FormData(event.currentTarget);
+    const body = Object.fromEntries(formData) as AddCharacterForm;
 
-  // console.log(formData);
-  const translate = useContext(TranslateContext);
-  const { addHandler: addCharHandler } = useCharactersHandlers();
+    charService
+      .createNewChar({ ...body, alive: body.alive === 'on' })
+      .then((newChar) => {
+        dispatch(addCharacter(newChar));
+        event.currentTarget.reset();
+      })
+      .catch(console.log);
+  };
   return (
-    <Form
-      onSubmit={(e) => {
-        e.preventDefault();
-        if (!formData.image.startsWith('http')) return;
-        void addCharHandler({
-          ...formData,
-          alive: formData.alive ? 'true' : '',
-        }).then(() => setFormData(defaultFormData));
-      }}
-    >
+    <Form onSubmit={submitHandler}>
       <FormGroup>
-        <Label for="charName">{translate ? 'Имя' : 'Name'}</Label>
-        <Input
-          onChange={handleChange}
-          value={formData.name}
-          id="charName"
-          name="name"
-          placeholder={translate ? 'Имя' : 'Name'}
-          type="text"
-        />
+        <Label for="charName">Имя</Label>
+        <Input id="charName" name="name" placeholder="Имя" type="text" />
       </FormGroup>
       <FormGroup>
-        <Label for="charType">{translate ? 'Тип' : 'Type'}</Label>
-        <Input
-          onChange={handleChange}
-          value={formData.type}
-          id="charType"
-          name="type"
-          placeholder={translate ? 'Тип' : 'Type'}
-          type="text"
-        />
+        <Label for="charType">Тип</Label>
+        <Input id="charType" name="type" placeholder="Тип" type="text" />
       </FormGroup>
       <FormGroup>
-        <Label for="charImg">{translate ? 'Картинка' : 'Image'}</Label>
-        <Input
-          onChange={handleChange}
-          value={formData.image}
-          id="charImg"
-          name="image"
-          placeholder="http://..."
-          type="text"
-        />
+        <Label for="charImg">Картинка</Label>
+        <Input id="charImg" name="image" placeholder="http://..." type="text" />
       </FormGroup>
 
       <FormGroup>
-        <Input
-          onChange={(e) =>
-            setFormData((prev) => ({ ...prev, alive: e.target.checked }))
-          }
-          checked={formData.alive}
-          type="checkbox"
-          name="alive"
-        />
-        <Label>{translate ? 'Жив' : 'Alive'}</Label>
+        <Input type="checkbox" name="alive" />
+        <Label>Жив</Label>
       </FormGroup>
-      <Button type="submit">{translate ? 'Добавить' : 'Submit'}</Button>
+      <Button type="submit">Добавить</Button>
     </Form>
   );
 }

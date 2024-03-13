@@ -1,16 +1,10 @@
 import React from 'react';
 import { Col, Row } from 'reactstrap';
-// import type { CharacterType } from '../../types/character';
 import CharCard from './CharCard';
-import { useCharactersContext } from '../../contexts/characters/hooks';
-
-// type CharListProps = {
-//   characters: CharacterType[];
-//   handleDelete: (id: number) => void;
-// };
+import { useAppSelector } from '../../redux/hooks';
 
 export default function CharList(): JSX.Element {
-  const characters = useCharactersContext();
+  const characters = useAppSelector((store) => store.characters.chars);
   return (
     <Row>
       {characters.map((char) => (

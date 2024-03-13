@@ -1,57 +1,20 @@
 export type CharacterType = {
   id: number;
   name: string;
-  alive: boolean; // 'alive' | 'dead'
+  alive: boolean;
   image: string;
   type: string;
 };
 
-export type RickMortyApiResponse = {
-  info: {
-    count: number;
-    pages: number;
-  };
-  results: CharacterType[];
-};
-
-export type AddCharFormData<T = string> = {
+export type AddCharacterForm = {
   name: string;
   image: string;
   type: string;
-  alive: T;
+  alive?: 'on';
 };
 
-export type DeleteChar = (id: CharacterType['id']) => void;
-
-export type AddChar = (formData: AddCharFormData) => Promise<void>;
-
-export type CharactersHandlerContextValue = {
-  deleteHandler: DeleteChar;
-  addHandler: AddChar;
+export type CharacterStateType = {
+  chars: CharacterType[];
+  selectedChar: CharacterType | null;
+  favorites: CharacterType[];
 };
-
-export type CharactersState = CharacterType[];
-
-export type CharactersAction =
-  | {
-      type: 'NO_ACTION';
-    }
-  | {
-      type: 'ADD_CHAR';
-      payload: CharacterType;
-    }
-  | {
-      type: 'DELETE_CHAR';
-      payload: CharacterType['id'];
-    }
-  | {
-      type: 'EDIT_CHAR';
-      payload: CharacterType;
-    }
-  | {
-      type: 'CLEAR_ALL_CHARS';
-    }
-  | {
-      type: 'SET_CHARS';
-      payload: CharacterType[];
-    };

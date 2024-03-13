@@ -1,26 +1,23 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import IndexPage from './components/pages/IndexPage';
-import {
-  ToggleTranslateContext,
-  TranslateContext,
-} from './contexts/translate/context';
+import { useAppDispatch } from './redux/hooks';
+import charService from './services/charService';
+import { setCharacters } from './redux/slices/characters/slice';
 
 function App(): JSX.Element {
-  const [ruTranslate, setRuTranslate] = useState(false);
-
-  const toggleTranslation = useCallback(
-    (): void => setRuTranslate((prev) => !prev),
-    [],
-  );
-
+  const dispatch = useAppDispatch();
+  useEffect(() => {
+    charService
+      .getAllChars()
+      .then((data) => {
+        dispatch(setCharacters(data));
+      })
+      .catch(console.log);
+  }, []);
   return (
-    <TranslateContext.Provider value={ruTranslate}>
-      <ToggleTranslateContext.Provider value={toggleTranslation}>
-        <div className="App">
-          <IndexPage />
-        </div>
-      </ToggleTranslateContext.Provider>
-    </TranslateContext.Provider>
+    <div className="App">
+      <IndexPage />
+    </div>
   );
 }
 
