@@ -3,6 +3,7 @@ const jwt = require('jsonwebtoken');
 
 function verifyAccessToken(req, res, next) {
   try {
+    // Authorization: 'Bearer ndasjn2quihdakdku2dalh2diln'
     const accessToken = req.headers.authorization.split(' ')[1];
     const { user } = jwt.verify(accessToken, process.env.ACCESS_TOKEN_SECRET);
 

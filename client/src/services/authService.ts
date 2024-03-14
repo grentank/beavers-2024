@@ -1,34 +1,28 @@
 import type { AxiosInstance } from 'axios';
-import type {
-  UserResponceAuthType,
-  UserSignInType,
-  UserSignUpType,
-  UserType,
-} from '../types/userTypes';
-
-import apiInstance from './apiInstance';
+import authClientInstance from './authClientInstance';
+import type { AuthState, BackendAuth, LoginForm } from '../types/auth';
 
 class AuthService {
-  constructor(private readonly api: AxiosInstance) {}
+  constructor(private client: AxiosInstance) {}
 
-  public userSignUpService(data: UserSignUpType): Promise<UserResponceAuthType> {
-    return this.api.post<UserResponceAuthType>('/auth/signup', data).then((res) => res.data);
+  async login(formData: LoginForm): Promise<AuthState> {
+    const res = await this.client.post<BackendAuth>('/auth/login', formData);
+    if (res.status !== 200) return Promise.reject(new Error('Failed login'));
+    return { ...res.data, user: { ...res.data.user, status: 'logged' } };
   }
 
-  public userSignInService(data: UserSignInType): Promise<UserResponceAuthType> {
-    return this.api.post<UserResponceAuthType>('/auth/login', data).then((res) => res.data);
+  async refresh(): Promise<AuthState> {
+    const res = await this.client<BackendAuth>('/tokens/refresh');
+    if (res.status !== 200)
+      return Promise.reject(new Error('Cannot refresh tokens'));
+    return { ...res.data, user: { ...res.data.user, status: 'logged' } };
   }
 
-  public checkUserService(): Promise<UserType> {
-    return this.api<{ user: UserType }>('/auth/check').then(
-      (res) =>
-        new Promise((resolve) => {
-          setTimeout(() => {
-            resolve(res.data.user);
-          }, 1000);
-        }),
-    );
+  async logout(): Promise<void> {
+    return this.client('/auth/logout');
   }
 }
 
-export default new AuthService(apiInstance);
+const authService = new AuthService(authClientInstance);
+
+export default authService;

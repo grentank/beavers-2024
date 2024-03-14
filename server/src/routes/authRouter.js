@@ -48,7 +48,7 @@ authRouter.post('/login', async (req, res) => {
 
     if (!user) return res.status(401).json({ message: 'User not found' });
 
-    const valid = await bcrypt.compare(password, user.password);
+    const valid = await bcrypt.compare(password, user.hashpass);
 
     if (!valid) return res.status(401).json({ message: 'Incorrect password' });
 

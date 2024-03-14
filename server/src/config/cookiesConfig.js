@@ -4,8 +4,8 @@ const cookiesConfig = {
   refresh: {
     httpOnly: true,
     maxAge: jwtConfig.refresh.expiresIn,
-    // sameSite: 'none',
-    // secure: true,
+    sameSite: 'none',
+    secure: true,
   },
   access: {
     httpOnly: true,

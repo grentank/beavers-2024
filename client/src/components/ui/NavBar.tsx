@@ -11,18 +11,36 @@ import {
   FormGroup,
   Input,
   Label,
+  Button,
 } from 'reactstrap';
-import { NavLink as RouterLink } from 'react-router-dom';
+import { NavLink as RouterLink, useNavigate } from 'react-router-dom';
+import { useAppDispatch, useAppSelector } from '../../redux/hooks';
+import { logoutThunk } from '../../redux/slices/auth/thunks';
 
 export default function NavBar(): JSX.Element {
-  const navs = [
-    { name: 'Главная', link: '/' },
-    { name: 'Персонажи', link: '/characters' },
-  ];
+  const dispatch = useAppDispatch();
+  const navigate = useNavigate();
+  const user = useAppSelector((store) => store.auth.user);
+  const navs =
+    user.status === 'guest'
+      ? [
+          { name: 'Главная', link: '/' },
+          { name: 'Логин', link: '/login' },
+          { name: 'Регистрация', link: '/signup' },
+        ]
+      : [
+          { name: 'Главная', link: '/' },
+          { name: 'Персонажи', link: '/characters' },
+        ];
+  const logoutHandler = (): void => {
+    void dispatch(logoutThunk()).then(() => navigate('/'));
+  };
   return (
     <div>
       <Navbar color="light" expand>
-        <NavbarBrand href="/">Бобры</NavbarBrand>
+        <NavbarBrand href="/">
+          {user.status === 'logged' ? user.name : 'Гость'}
+        </NavbarBrand>
         <NavbarToggler />
         <Collapse isOpen={false} navbar>
           <Nav className="me-auto" navbar>
@@ -33,6 +51,13 @@ export default function NavBar(): JSX.Element {
                 </NavLink>
               </NavItem>
             ))}
+            {user.status === 'logged' && (
+              <NavItem key="logout">
+                <NavLink tag={Button} onClick={logoutHandler}>
+                  Выйти
+                </NavLink>
+              </NavItem>
+            )}
           </Nav>
           <NavbarText>
             <FormGroup switch>

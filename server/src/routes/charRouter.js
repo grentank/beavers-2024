@@ -1,5 +1,6 @@
 const express = require('express');
 const { Character, User } = require('../../db/models');
+const verifyAccessToken = require('../middlewares/verifyAccessToken');
 
 const apiCharRouter = express.Router();
 
@@ -12,7 +13,7 @@ apiCharRouter
     });
     res.json(chars);
   })
-  .post(async (req, res) => {
+  .post(verifyAccessToken, async (req, res) => {
     try {
       const newChar = await Character.create({ ...req.body, userId: res.locals.user.id });
       const newCharWithUser = await Character.findOne({ where: { id: newChar.id }, include: User });
@@ -25,13 +26,13 @@ apiCharRouter
 
 apiCharRouter
   .route('/:id')
-  .delete(async (req, res) => {
+  .delete(verifyAccessToken, async (req, res) => {
     await Character.destroy({
       where: { id: req.params.id },
     });
     res.sendStatus(200);
   })
-  .put(async (req, res) => {
+  .put(verifyAccessToken, async (req, res) => {
     try {
       const targetChar = await Character.findOne({ where: { id: req.params.id }, include: User });
       for (const key in req.body) {
