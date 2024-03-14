@@ -1,5 +1,5 @@
 const express = require('express');
-const { Character } = require('../../db/models');
+const { Character, User } = require('../../db/models');
 
 const apiCharRouter = express.Router();
 
@@ -8,13 +8,15 @@ apiCharRouter
   .get(async (req, res) => {
     const chars = await Character.findAll({
       order: [['id', 'DESC']],
+      include: User,
     });
     res.json(chars);
   })
   .post(async (req, res) => {
     try {
-      const newChar = await Character.create(req.body);
-      res.status(201).json(newChar);
+      const newChar = await Character.create({ ...req.body, userId: res.locals.user.id });
+      const newCharWithUser = await Character.findOne({ where: { id: newChar.id }, include: User });
+      res.status(201).json(newCharWithUser);
     } catch (error) {
       console.log(error);
       res.status(500).json({ message: 'Error while creating' });
@@ -31,7 +33,7 @@ apiCharRouter
   })
   .put(async (req, res) => {
     try {
-      const targetChar = await Character.findOne({ where: { id: req.params.id } });
+      const targetChar = await Character.findOne({ where: { id: req.params.id }, include: User });
       for (const key in req.body) {
         if (Object.hasOwnProperty.call(req.body, key)) {
           targetChar[key] = req.body[key];
@@ -43,6 +45,10 @@ apiCharRouter
       console.log(error);
       res.status(500).json({ message: 'ERROR EDITING CHAR' });
     }
+  })
+  .get(async (req, res) => {
+    const char = await Character.findOne({ where: { id: req.params.id }, include: User });
+    res.json(char);
   });
 
 module.exports = apiCharRouter;

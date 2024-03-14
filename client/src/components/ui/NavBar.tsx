@@ -12,18 +12,27 @@ import {
   Input,
   Label,
 } from 'reactstrap';
+import { NavLink as RouterLink } from 'react-router-dom';
 
 export default function NavBar(): JSX.Element {
+  const navs = [
+    { name: 'Главная', link: '/' },
+    { name: 'Персонажи', link: '/characters' },
+  ];
   return (
     <div>
-      <Navbar>
+      <Navbar color="light" expand>
         <NavbarBrand href="/">Бобры</NavbarBrand>
         <NavbarToggler />
-        <Collapse isOpen navbar>
+        <Collapse isOpen={false} navbar>
           <Nav className="me-auto" navbar>
-            <NavItem>
-              <NavLink href="/">Главная</NavLink>
-            </NavItem>
+            {navs.map((nav) => (
+              <NavItem key={nav.name}>
+                <NavLink tag={RouterLink} to={nav.link}>
+                  {nav.name}
+                </NavLink>
+              </NavItem>
+            ))}
           </Nav>
           <NavbarText>
             <FormGroup switch>
