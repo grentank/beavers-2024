@@ -23,4 +23,6 @@ export type LoginForm = {
   password: string;
 };
 
+export type SignupForm = LoginForm & { name: string };
+
 export type BackendAuth = { accessToken: string; user: BackendUser };

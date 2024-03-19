@@ -1,6 +1,6 @@
 import type { AxiosInstance } from 'axios';
-import authClientInstance from './authClientInstance';
-import type { AuthState, BackendAuth, LoginForm } from '../types/auth';
+import authAxiosInstance from './authAxiosInstance';
+import type { AuthState, BackendAuth, LoginForm } from '../../types/auth';
 
 class AuthService {
   constructor(private client: AxiosInstance) {}
@@ -23,6 +23,6 @@ class AuthService {
   }
 }
 
-const authService = new AuthService(authClientInstance);
+const authService = new AuthService(authAxiosInstance);
 
 export default authService;

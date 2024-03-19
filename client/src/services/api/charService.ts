@@ -1,6 +1,6 @@
 import type { AxiosInstance } from 'axios';
-import apiInstance from './apiInstance';
-import type { CharacterType } from '../types/character';
+import apiAxiosInstance from './apiAxiosInstance';
+import type { CharacterType } from '../../types/character';
 
 class CharacterService {
   constructor(private client: AxiosInstance) {}
@@ -54,6 +54,6 @@ class CharacterService {
   }
 }
 
-const charService = new CharacterService(apiInstance);
+const charService = new CharacterService(apiAxiosInstance);
 
 export default charService;

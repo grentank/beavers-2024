@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import {
   Button,
   Card,
@@ -7,53 +7,54 @@ import {
   CardText,
   CardTitle,
 } from 'reactstrap';
+import { Link } from 'react-router-dom';
 import type { CharacterType } from '../../types/character';
+import TrashIcon from './icons/TrashIcon';
+import PencilIcon from './icons/PencilIcon';
+import ToggleOff from './icons/ToggleOff';
+import HeartIcon from './icons/HeartIcon';
 import { useAppDispatch } from '../../redux/hooks';
-import charService from '../../services/charService';
-import {
-  deleteCharacter,
-  setSelectedCharById,
-} from '../../redux/slices/characters/slice';
+import { setSelectedCharById } from '../../redux/slices/characters/slice';
 
 type CharCardProps = {
   char: CharacterType;
-  // handleDelete: (id: number) => void;
 };
 
-function CharCard({ char }: CharCardProps): JSX.Element {
-  console.log('card render', char.id);
+export default function CharCard({ char }: CharCardProps): JSX.Element {
   const dispatch = useAppDispatch();
-  const deleteCard = (): void => {
-    charService
-      .deleteCharById(char.id)
-      .then(() => dispatch(deleteCharacter(char.id)))
-      .catch(console.log);
-  };
   return (
     <Card
       style={{
+        margin: '1rem',
         width: '18rem',
       }}
     >
       <img alt="Sample" src={char.image} />
       <CardBody>
-        <CardTitle tag="h5">{char.name}</CardTitle>
+        <CardTitle tag="h5">
+          <Link to={`/characters/${char.id}`}>{char.name}</Link>
+        </CardTitle>
         <CardSubtitle className="mb-2 text-muted" tag="h6">
           {char.type}
         </CardSubtitle>
         <CardText>{char.alive ? 'Alive' : 'Dead'}</CardText>
-        <Button color="danger" onClick={deleteCard}>
-          Удалить
+        <Button color="danger" outline>
+          <TrashIcon />
         </Button>
         <Button
-          color="primary"
+          color="secondary"
           onClick={() => dispatch(setSelectedCharById(char.id))}
+          outline
         >
-          Изменить имя
+          <PencilIcon />
+        </Button>
+        <Button color="secondary" outline>
+          <ToggleOff />
+        </Button>
+        <Button color="secondary" outline>
+          <HeartIcon />
         </Button>
       </CardBody>
     </Card>
   );
 }
-
-export default React.memo(CharCard);

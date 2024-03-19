@@ -4,6 +4,7 @@ export type CharacterType = {
   alive: boolean;
   image: string;
   type: string;
+  userId: number;
 };
 
 export type AddCharacterForm = {
@@ -17,4 +18,5 @@ export type CharacterStateType = {
   chars: CharacterType[];
   selectedChar: CharacterType | null;
   favorites: CharacterType[];
+  displayedChars: CharacterType[];
 };

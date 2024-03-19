@@ -4,11 +4,13 @@ import type {
   CharacterStateType,
   CharacterType,
 } from '../../../types/character';
+import { getAllCharsThunk } from './thunks';
 
 const initialState: CharacterStateType = {
   chars: [],
   selectedChar: null,
   favorites: [],
+  displayedChars: [],
 };
 
 export const charactersSlice = createSlice({
@@ -17,15 +19,6 @@ export const charactersSlice = createSlice({
   reducers: {
     addCharacter: (state, action: PayloadAction<CharacterType>) => {
       state.chars.unshift(action.payload);
-    },
-    deleteCharacter: (state, action: PayloadAction<CharacterType['id']>) => {
-      //   state.chars = state.chars.filter((char) => char.id !== action.payload);
-      const targetIndex = state.chars.findIndex(
-        (char) => char.id === action.payload,
-      );
-      if (targetIndex !== -1) {
-        state.chars.splice(targetIndex, 1);
-      }
     },
     setCharacters: (state, action: PayloadAction<CharacterType[]>) => {
       state.chars = action.payload;
@@ -40,13 +33,12 @@ export const charactersSlice = createSlice({
     clearSelectedChar: (state) => {
       state.selectedChar = null;
     },
-    editChar: (state, action: PayloadAction<CharacterType>) => {
-      const ind = state.chars.findIndex(
-        (char) => char.id === action.payload.id,
-      );
-      if (ind === -1) return;
-      state.chars[ind] = action.payload;
-    },
+  },
+  extraReducers: (builder) => {
+    builder.addCase(getAllCharsThunk.fulfilled, (state, action) => {
+      state.chars = action.payload;
+      state.displayedChars = action.payload;
+    });
   },
 });
 
@@ -56,8 +48,6 @@ export const {
   addCharacter,
   setCharacters,
   setSelectedCharById,
-  deleteCharacter,
-  editChar,
 } = charactersSlice.actions;
 
 export default charactersSlice.reducer;

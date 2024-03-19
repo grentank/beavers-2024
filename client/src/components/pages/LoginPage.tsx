@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import type { LoginForm } from '../../types/auth';
 import { useAppDispatch } from '../../redux/hooks';
 import { loginThunk } from '../../redux/slices/auth/thunks';
+import { openModalWithError } from '../../redux/slices/modal/slice';
 
 export default function LoginPage(): JSX.Element {
   const dispatch = useAppDispatch();
@@ -13,8 +14,16 @@ export default function LoginPage(): JSX.Element {
     const formData = Object.fromEntries(
       new FormData(event.currentTarget),
     ) as LoginForm;
-    void dispatch(loginThunk(formData)).then(() => navigate('/characters'));
-    // dispatch(loginAction(formData)).then(() => navigate('/'))
+    void dispatch(loginThunk(formData))
+      .unwrap()
+      .then(() => navigate('/characters/filters'))
+      .catch(() =>
+        dispatch(
+          openModalWithError(
+            'Ошибка входа! Проверьте данные и повторите попытку',
+          ),
+        ),
+      );
   };
   return (
     <Form onSubmit={handleSubmit}>
@@ -32,17 +41,12 @@ export default function LoginPage(): JSX.Element {
         </Col>
         <Col>
           <Label className="visually-hidden" for="examplePassword">
-            Password
+            Пароль
           </Label>
-          <Input
-            id="examplePassword"
-            name="password"
-            placeholder="don't tell!"
-            type="password"
-          />
+          <Input id="examplePassword" name="password" type="password" />
         </Col>
         <Col>
-          <Button>Submit</Button>
+          <Button>Войти</Button>
         </Col>
       </Row>
     </Form>

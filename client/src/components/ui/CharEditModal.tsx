@@ -5,7 +5,6 @@ import {
   ModalHeader,
   ModalBody,
   ModalFooter,
-  Form,
   FormGroup,
   Label,
   Input,
@@ -13,9 +12,7 @@ import {
 import { useAppDispatch, useAppSelector } from '../../redux/hooks';
 import {
   clearSelectedChar,
-  editChar,
 } from '../../redux/slices/characters/slice';
-import charService from '../../services/charService';
 
 export default function CharEditModal(): JSX.Element {
   const selectedChar = useAppSelector((store) => store.characters.selectedChar);
@@ -30,23 +27,16 @@ export default function CharEditModal(): JSX.Element {
   }, [selectedChar]);
 
   const editHandler = (): void => {
-    if (!selectedChar) return;
-    charService
-      .editChar({ ...selectedChar, name: newName })
-      .then((newChar) => {
-        dispatch(editChar(newChar));
-        closeModal();
-      })
-      .catch(console.log);
+    closeModal();
   };
 
   return (
     <div>
       <Modal isOpen={!!selectedChar} toggle={closeModal}>
-        <ModalHeader toggle={closeModal}>Modal title</ModalHeader>
+        <ModalHeader toggle={closeModal}>{selectedChar?.name}</ModalHeader>
         <ModalBody>
           <FormGroup>
-            <Label for="charName">Имя</Label>
+            <Label for="charName">Изменить имя</Label>
             <Input
               value={newName}
               onChange={(e) => setNewName(e.target.value)}

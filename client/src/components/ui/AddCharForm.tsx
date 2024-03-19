@@ -1,43 +1,27 @@
-import React, { useContext, useState } from 'react';
+import React, { useState } from 'react';
 import { Button, Col, Form, FormGroup, Input, Label, Row } from 'reactstrap';
-import type { AddCharacterForm, CharacterType } from '../../types/character';
-import charService from '../../services/charService';
-import { useAppDispatch } from '../../redux/hooks';
-import { addCharacter } from '../../redux/slices/characters/slice';
+import type { CharacterType } from '../../types/character';
 import CharCard from './CharCard';
 
-function AddCharForm(): JSX.Element {
-  const dispatch = useAppDispatch();
+const defaultCardData: Omit<CharacterType, 'id' | 'userId'> = {
+  name: 'Крутой бобёр',
+  type: 'Бобёр',
+  image:
+    'https://cdn.oboi7.com/7195df099a0962e78a7172aa828d9702709f4c12/krutye-bobry.png',
+  alive: true,
+};
 
-  const [cardData, setCardData] = useState<Omit<CharacterType, 'id'>>({
-    name: '',
-    type: '',
-    image: '',
-    alive: false,
-  });
+export default function AddCharForm(): JSX.Element {
+  const [cardData, setCardData] =
+    useState<Omit<CharacterType, 'id' | 'userId'>>(defaultCardData);
 
   const hangleChange = (event: React.ChangeEvent<HTMLInputElement>): void =>
     setCardData({ ...cardData, [event.target.name]: event.target.value });
 
-  const submitHandler: React.FormEventHandler<HTMLFormElement> = (event) => {
-    event.preventDefault();
-    const formData = new FormData(event.currentTarget);
-    const body = Object.fromEntries(formData) as AddCharacterForm;
-
-    charService
-      .createNewChar({ ...body, alive: body.alive === 'on' })
-      .then((newChar) => {
-        dispatch(addCharacter(newChar));
-        setCardData({ name: '', type: '', image: '', alive: false });
-        // event.currentTarget.reset();
-      })
-      .catch(console.log);
-  };
-  console.log(cardData);
   return (
     <Row>
       <Col xs="6">
-        <Form onSubmit={submitHandler}>
+        <Form>
           <FormGroup>
             <Label for="charName">Имя</Label>
             <Input
@@ -87,10 +71,8 @@ function AddCharForm(): JSX.Element {
         </Form>
       </Col>
       <Col xs="6">
-        <CharCard char={{ ...cardData, id: 0 }} />
+        <CharCard char={{ ...cardData, id: 0, userId: 0 }} />
       </Col>
     </Row>
   );
 }
-
-export default React.memo(AddCharForm);

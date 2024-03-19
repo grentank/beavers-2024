@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import {
   Collapse,
   Navbar,
@@ -13,28 +13,20 @@ import {
   Label,
   Button,
 } from 'reactstrap';
-import { NavLink as RouterLink, useNavigate } from 'react-router-dom';
-import { useAppDispatch, useAppSelector } from '../../redux/hooks';
-import { logoutThunk } from '../../redux/slices/auth/thunks';
+import { NavLink as RouterLink } from 'react-router-dom';
+import { useAppSelector } from '../../redux/hooks';
 
 export default function NavBar(): JSX.Element {
-  const dispatch = useAppDispatch();
-  const navigate = useNavigate();
   const user = useAppSelector((store) => store.auth.user);
-  const navs =
-    user.status === 'guest'
-      ? [
-          { name: 'Главная', link: '/' },
-          { name: 'Логин', link: '/login' },
-          { name: 'Регистрация', link: '/signup' },
-        ]
-      : [
-          { name: 'Главная', link: '/' },
-          { name: 'Персонажи', link: '/characters' },
-        ];
-  const logoutHandler = (): void => {
-    void dispatch(logoutThunk()).then(() => navigate('/'));
-  };
+  const navs = [
+    { name: 'Главная', link: '/' },
+    { name: 'Логин', link: '/login' },
+    { name: 'Регистрация', link: '/signup' },
+    { name: 'Персонажи', link: '/characters' },
+    { name: 'Фильтры', link: '/characters/filters' },
+    { name: 'Избранное', link: '/characters/favorites' },
+  ];
+
   return (
     <div>
       <Navbar color="light" expand>
@@ -53,9 +45,7 @@ export default function NavBar(): JSX.Element {
             ))}
             {user.status === 'logged' && (
               <NavItem key="logout">
-                <NavLink tag={Button} onClick={logoutHandler}>
-                  Выйти
-                </NavLink>
+                <NavLink tag={Button}>Выйти</NavLink>
               </NavItem>
             )}
           </Nav>

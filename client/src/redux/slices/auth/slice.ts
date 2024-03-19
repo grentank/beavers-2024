@@ -1,7 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit';
 import type { PayloadAction } from '@reduxjs/toolkit';
 import type { AuthState } from '../../../types/auth';
-import { loginThunk, logoutThunk, refreshAuth } from './thunks';
+import { loginThunk, refreshAuth } from './thunks';
 
 const initialState: AuthState = {
   accessToken: '',
@@ -25,10 +25,6 @@ export const authSlice = createSlice({
     builder.addCase(refreshAuth.fulfilled, (state, action) => action.payload);
     builder.addCase(refreshAuth.rejected, (state) => {
       state.user.status = 'guest';
-    });
-    builder.addCase(logoutThunk.fulfilled, (state) => {
-      state.user.status = 'guest';
-      state.accessToken = '';
     });
   },
 });
